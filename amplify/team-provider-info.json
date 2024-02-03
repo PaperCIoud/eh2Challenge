@@ -10,6 +10,11 @@
       "StackName": "amplify-eh2challenge-dev-175615",
       "StackId": "arn:aws:cloudformation:us-east-2:471112859243:stack/amplify-eh2challenge-dev-175615/46df49b0-c21e-11ee-bf0a-028136f7c871",
       "AmplifyAppId": "d891fmn0o6b7f"
+    },
+    "categories": {
+      "api": {
+        "eh2challenge": {}
+      }
     }
   }
 }
