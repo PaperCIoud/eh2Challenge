@@ -14,6 +14,25 @@ export default function App() {
   const [inputTitle, setInputTitle] = useState("");
   const [inputNote, setInputNote] = useState("");
 
+  useEffect(() => {
+    fetchNote();
+    const subscription = DataStore.observe(Note).subscribe(() => fetchNote())
+    return () => subscription.unsubscribe()
+  })
+
+  const handleSave = async () => {
+    if(inputTitle) {
+      await DataStore.save(new Note({name: inputTitle, content: inputNote}));
+      console.log('successfully saved note')
+    }
+  };
+
+  const fetchNote = async () => {
+    console.log("Begin query");
+    const note = await DataStore.query(Note, '9c088fe6-8d1b-47db-94b4-b50c7588bf94');
+    setInputTitle(note.name);
+    setInputNote(note.content);
+  };
 
 
   return (
@@ -38,6 +57,11 @@ export default function App() {
           multiline={true}
         />
       </TouchableOpacity>
+
+      <Button
+        onPress={handleSave}
+        title='Save Note'
+      />
       
       <StatusBar style="auto" />
     </View>
