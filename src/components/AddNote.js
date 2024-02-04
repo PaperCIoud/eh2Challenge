@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Text, View, Button, TouchableOpacity, TextInput} from 'react-native';
+import { Text, View, Button, TouchableOpacity, TextInput, Keyboard} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 
 import { Note } from '../models';
