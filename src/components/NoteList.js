@@ -3,7 +3,7 @@ import { Text, View, Button, TouchableOpacity, ScrollView, Modal } from 'react-n
 import { DataStore } from '@aws-amplify/datastore';
 
 import { Note } from '../models';
-import { styles } from '../../App';
+import { styles } from '../styles';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
 

@@ -1,10 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { Text, View, Button, TouchableOpacity, TextInput} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 
 import { Note } from '../models';
-import { styles } from '../../App';
+import { styles } from '../styles';
 
 /**
  * The modal page to add a new note. Title of note must not be empty
@@ -50,8 +49,6 @@ export default function AddNote(props) {
           title='Save Note'
         />
         
-        
-        <StatusBar style="auto" />
       </View>
     );
   }
