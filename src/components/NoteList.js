@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { Text, View, Button, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Predicates } from '@aws-amplify/datastore';
 
 import { Note } from '../models';
 import { styles } from '../styles';
@@ -49,6 +49,10 @@ export default function NoteList() {
     openViewNote();
   }
 
+  const handleRemove = async() => {
+    await DataStore.delete(Note, Predicates.ALL);
+  }
+
   return (
     <View
       style={styles.container}
@@ -70,6 +74,12 @@ export default function NoteList() {
           style={styles.noteButton}
           onPress={() => openAddNote()} 
           title="Add Note"
+        /> 
+
+        <Button 
+          style={styles.noteButton}
+          onPress={() => handleRemove()} 
+          title="Delete All"
         /> 
 
         <Modal

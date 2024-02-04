@@ -13,8 +13,10 @@ import { useState, useEffect } from 'react';
  * @param {object} note the note object to be displayed
  */
 export default function ViewNote(props) {
-    const [inputTitle, setInputTitle] = useState("");
-    const [inputNote, setInputNote] = useState("");
+    const [inputTitle, setInputTitle] = useState(props.note.name);
+    const [inputNote, setInputNote] = useState(props.note.content);
+
+    
 
     const handleUpdate = async() => {
         await DataStore.save(
