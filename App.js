@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Keyboard, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Keyboard, Text, View, TextInput, Button, TouchableOpacity, ScrollView, Modal } from 'react-native';
 
 import { Amplify } from 'aws-amplify';
 import amplifyconfig from './src/amplifyconfiguration.json';
@@ -10,29 +10,97 @@ import { DataStore } from '@aws-amplify/datastore';
 import {Note} from './src/models';
 
 
+
 export default function App() {
-  const [inputTitle, setInputTitle] = useState("");
-  const [inputNote, setInputNote] = useState("");
+  const [notes, setNotes] = useState([]);
+  const [isAddingNote, setAddNoteVis] = useState(false);
 
   useEffect(() => {
-    fetchNote();
-    const subscription = DataStore.observe(Note).subscribe(() => fetchNote())
+    fetchNotes();
+    const subscription = DataStore.observe(Note).subscribe(() => fetchNotes())
     return () => subscription.unsubscribe()
   })
 
-  const handleSave = async () => {
-    if(inputTitle) {
-      await DataStore.save(new Note({name: inputTitle, content: inputNote}));
-      console.log('successfully saved note')
-    }
+  const fetchNotes = async () => {
+    //console.log("Begin query");
+    const notes = await DataStore.query(Note);
+    setNotes(notes);
   };
 
-  const fetchNote = async () => {
-    console.log("Begin query");
-    const note = await DataStore.query(Note, '9c088fe6-8d1b-47db-94b4-b50c7588bf94');
-    setInputTitle(note.name);
-    setInputNote(note.content);
+  const openAddNote = () => {
+    setAddNoteVis(true);
+  }
+
+  const closeAddNote = () => {
+    setAddNoteVis(false);
+  }
+
+  return (
+    <View
+      style={styles.container}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+      > 
+        {notes.map((note) => ( 
+            <Button 
+              style={styles.noteButton}
+              key={note.id} 
+              //onPress={() => handleViewNote()} 
+              title={note.name}
+            >   
+            </Button> 
+        ))} 
+        <Button 
+          style={styles.noteButton}
+          onPress={() => openAddNote()} 
+          title="Add Note"
+        /> 
+
+        <Modal
+          visible={isAddingNote} 
+        >
+          <AddNote closeAddNote = {closeAddNote}></AddNote>
+        </Modal>
+      </ScrollView>
+
+    </View>
+  )
+}
+
+
+
+
+
+
+const AddNote = (props) => {
+  const [inputTitle, setInputTitle] = useState("");
+  const [inputNote, setInputNote] = useState("");
+
+  const handleSave = async () => {
+    if(inputTitle) {
+      const note = await DataStore.save(new Note({name: inputTitle, content: inputNote}));
+      console.log('successfully saved note')
+    }
+    props.closeAddNote();
   };
+
+  const handleUpdate = async () => {
+    updateNote();
+  }
+
+  
+
+  const updateNote = async () => {
+    const currentNote = await DataStore.query(Note, "9c088fe6-8d1b-47db-94b4-b50c7588bf94");
+
+    await DataStore.save(
+      Note.copyOf(currentNote, newNote => {
+        newNote.name = inputTitle;
+        newNote.content = inputNote;
+      })
+    );
+  }
 
 
   return (
@@ -46,13 +114,13 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder="title"
-          onChangeText={newText => setInputTitle(newText)}
+          onChangeText={setInputTitle}
           defaultValue={inputTitle}
         />
         <TextInput
           style={styles.input}
           placeholder="type notes"
-          onChangeText={newText => setInputNote(newText)}
+          onChangeText={setInputNote}
           defaultValue={inputNote}
           multiline={true}
         />
@@ -61,6 +129,10 @@ export default function App() {
       <Button
         onPress={handleSave}
         title='Save Note'
+      />
+      <Button
+        onPress={handleUpdate}
+        title='update Note'
       />
       
       <StatusBar style="auto" />
@@ -80,5 +152,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 350,
     marginBottom: 10
+  },
+  noteButton: {
+    alignItems: "center", 
+    justifyContent: "center", 
+    color: "#007BFF", 
+    paddingVertical: 12, 
+    borderRadius: 5, 
+    marginTop: 10,
   }
 });
