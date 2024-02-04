@@ -12,22 +12,7 @@ import { styles } from '../../App';
  * @param {object} note the note object to be displayed
  */
 export default function ViewNote(props) {
-
-    const handleUpdate = async () => {
-      updateNote();
-    }
-  
-    const updateNote = async () => {
-      const currentNote = await DataStore.query(Note, props.note.id);
-  
-      await DataStore.save(
-        Note.copyOf(currentNote, newNote => {
-          newNote.name = inputTitle;
-          newNote.content = inputNote;
-        })
-      );
-    }
-
+    
     return(
       <View style={styles.container}> 
         <Text>{props.note.name}</Text>
@@ -36,11 +21,6 @@ export default function ViewNote(props) {
           style={styles.buttons}
           onPress={props.closeViewNote}
           title='back'
-        />
-        <Button
-          style={styles.buttons}
-          onPress={handleUpdate}
-          title='update Note'
         />
       </View>
     )

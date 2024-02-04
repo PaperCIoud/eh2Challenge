@@ -12,7 +12,7 @@ import ViewNote from './ViewNote';
  * The overall note page that displays a list of all existing notes
  */
 export default function NoteList() {
-    const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [isAddingNote, setAddVisible] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [isViewingNote, setViewVisible] = useState(false);
